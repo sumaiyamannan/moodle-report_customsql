@@ -2,8 +2,7 @@
     font-size: 0.8em;
     color: #c10031;
 }
-.reportcounts,
-body.path-admin-report-customsql a.view-category {
+.reportcounts {
     font-weight: normal;
     font-size: 0.65em;
 }
@@ -31,10 +30,4 @@ body.path-admin-report-customsql a.view-category {
 }
 .csql_category.csql_categoryhidden .csql_category_reports {
     display: none;
-}
-
-#page-admin-report-customsql-edit #id_querysql {
-    min-width: 100%;
-    font-family: monospace;
-    line-height: 1.4;
 }

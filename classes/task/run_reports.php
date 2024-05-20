@@ -23,6 +23,8 @@
  */
 
 namespace report_customsql\task;
+defined('MOODLE_INTERNAL') || die();
+
 
 /**
  * A scheduled task for Report Custom SQL, to run the scheduled reports.
@@ -73,8 +75,8 @@ class run_reports extends \core\task\scheduled_task {
         $scheduledreportstorun = $DB->get_records_select('report_customsql_queries',
                                             "(runable = 'weekly' AND lastrun < :startofthisweek) OR
                                              (runable = 'monthly' AND lastrun < :startofthismonth)",
-                                            ['startofthisweek' => $startofthisweek,
-                                                  'startofthismonth' => $startofthismonth], 'lastrun');
+                                            array('startofthisweek' => $startofthisweek,
+                                                  'startofthismonth' => $startofthismonth), 'lastrun');
 
         // All reports ready to run.
         $reportstorun = array_merge($dailyreportstorun, $scheduledreportstorun);
@@ -84,14 +86,7 @@ class run_reports extends \core\task\scheduled_task {
             try {
                 report_customsql_generate_csv($report, $timenow);
             } catch (\Exception $e) {
-                $info = get_exception_info($e);
-                mtrace("... REPORT FAILED " . $info->message);
-                if (!empty($info->debuginfo)) {
-                    mtrace("\nDebug info: $info->debuginfo");
-                }
-                if (!empty($info->backtrace)) {
-                    mtrace("\nStack trace: " . format_backtrace($info->backtrace, true));
-                }
+                mtrace("... REPORT FAILED " . $e->getMessage());
             }
         }
     }

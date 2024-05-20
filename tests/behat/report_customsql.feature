@@ -6,7 +6,6 @@ Feature: Ad-hoc database queries report
 
   Scenario: Create an Ad-hoc database query
     When I log in as "admin"
-    And the Ad-hoc database queries thinks the time is "2021-05-10 18:00:00"
     And I navigate to "Reports > Ad-hoc database queries" in site administration
     And I press "Add a new query"
     And I set the following fields to these values:
@@ -20,24 +19,13 @@ Feature: Ad-hoc database queries report
     And I should see "This report has 1 rows."
     And I should see "Download these results as"
     And the "Download these results as" select box should contain "Comma separated values (.csv)"
-    And I follow "Edit query 'Test query'"
-    And I should see "Time created: Monday, 10 May 2021, 6:00 PM"
-    And I should see "Last modified: Monday, 10 May 2021, 6:00 PM"
-    And I should see "Modified by: Admin User"
 
   Scenario: Edit an Ad-hoc database query
-    Given the following "users" exist:
-      | username | firstname | lastname | email               |
-      | mamager1 | Manager   | 1        | manager@example.com |
-    And the following custom sql report exists:
-      | name         | Test query                                    |
-      | description  | Display the Moodle internal version number.   |
-      | querysql     | SELECT * FROM {config} WHERE name = 'version' |
-      | timecreated  | ## 2021-05-10 18:00:00 ##                     |
-      | timemodified | ## 2021-05-10 18:00:00 ##                     |
-      | usermodified | mamager1                                      |
+    Given the following custom sql report exists:
+      | name        | Test query                                    |
+      | description | Display the Moodle internal version number.   |
+      | querysql    | SELECT * FROM {config} WHERE name = 'version' |
     When I log in as "admin"
-    And the Ad-hoc database queries thinks the time is "2021-05-10 19:00:00"
     And I navigate to "Reports > Ad-hoc database queries" in site administration
     And I follow "Edit query 'Test query'"
     And the following fields match these values:
@@ -52,10 +40,6 @@ Feature: Ad-hoc database queries report
     Then I should see "Renamed query"
     And I should see "New description."
     And I should see "This report has 1 rows."
-    And I follow "Edit query 'Renamed query'"
-    And I should see "Time created: Monday, 10 May 2021, 6:00 PM"
-    And I should see "Last modified: Monday, 10 May 2021, 7:00 PM"
-    And I should see "Modified by: Admin User"
 
   Scenario: Delete an Ad-hoc database query
     Given the following custom sql report exists:
@@ -70,18 +54,11 @@ Feature: Ad-hoc database queries report
 
   Scenario: View an Ad-hoc database query that returns no data
     Given the following custom sql report exists:
-      | name     | Test query                               |
-      | querysql | SELECT * FROM {config} WHERE name = '-1' |
+      | name        | Test query                               |
+      | querysql    | SELECT * FROM {config} WHERE name = '-1' |
     When I log in as "admin"
     And I view the "Test query" custom sql report
     Then I should see "This query did not return any data."
-
-  Scenario: Download an Ad-hoc database query that returns no data but includes headers
-    Given the following custom sql report exists:
-      | name     | Test query                               |
-      | querysql | SELECT * FROM {config} WHERE name = '-1' |
-    When I log in as "admin"
-    Then downloading custom sql report "Test query" returns a file with headers "id,name,value"
 
   Scenario: Create an Ad-hoc database queries category
     When I log in as "admin"
@@ -101,11 +78,11 @@ Feature: Ad-hoc database queries report
     And I should see "No queries available"
     And I press "Add a new query"
     And I set the following fields to these values:
-      | Category   | Special reports                               |
-      | Query name | Test query                                    |
-      | Query SQL  | SELECT * FROM {config} WHERE name = 'version' |
+      | Category    | Special reports                               |
+      | Query name  | Test query                                    |
+      | Query SQL   | SELECT * FROM {config} WHERE name = 'version' |
     And I press "Save changes"
-    And I navigate to "Reports > Ad-hoc database queries" in site administration
+    And I follow "Ad-hoc database queries"
     And I follow "Special reports"
     # Also test expand/collapse while we are here.
     Then I should see "Test query"
@@ -116,25 +93,6 @@ Feature: Ad-hoc database queries report
     And I should see "Test query"
     And I should not see "Expand all"
     And I should see "Collapse all"
-
-  Scenario: View a category and add an ad-hoc database query inside a category
-    Given the custom sql report category "Category 1" exists:
-    And the custom sql report category "Category 2" exists:
-    When I log in as "admin"
-    And I navigate to "Reports > Ad-hoc database queries" in site administration
-    And I follow "Show only Category 2"
-    Then I should see "Category 2"
-    And I should see "No queries available"
-    And I press "Add a new query"
-    And the field "Category" matches value "Category 2"
-    And I set the following fields to these values:
-      | Query name | Test query                                    |
-      | Query SQL  | SELECT * FROM {config} WHERE name = 'version' |
-    And I press "Save changes"
-    And I should see "Test query"
-    And I should see "Category 2" in the "div#page-navbar" "css_element"
-    And I follow "Back to category 'Category 2'"
-    And I should see "Test query"
 
   Scenario: Delete an empty Ad-hoc database queries category
     Given the custom sql report category "Special reports" exists:
@@ -182,8 +140,8 @@ Feature: Ad-hoc database queries report
     And I navigate to "Reports > Ad-hoc database queries" in site administration
     And I press "Add a new query"
     And I set the following fields to these values:
-      | Query name | Find user                                       |
-      | Query SQL  | SELECT * FROM {user} WHERE username = :username |
+      | Query name  | Find user                                       |
+      | Query SQL   | SELECT * FROM {user} WHERE username = :username |
     And I press "Verify the Query SQL text and update the form"
     And I set the field "username" to "frog"
     And I press "Save changes"
@@ -199,8 +157,8 @@ Feature: Ad-hoc database queries report
 
   Scenario: Link directly to an Ad-hoc database query that has parameters
     Given the following custom sql report exists:
-      | name     | Find user                                       |
-      | querysql | SELECT * FROM {user} WHERE username = :username |
+      | name        | Find user                                       |
+      | querysql    | SELECT * FROM {user} WHERE username = :username |
     When I log in as "admin"
     And I view the "Find user" custom sql report with these URL parameters:
       | username | frog |
@@ -212,8 +170,8 @@ Feature: Ad-hoc database queries report
 
   Scenario: Link directly to an Ad-hoc database query giving some parameters
     Given the following custom sql report exists:
-      | name     | Find user                                                                  |
-      | querysql | SELECT * FROM {user} WHERE firstname = :firstname AND lastname = :lastname |
+      | name        | Find user                                                                  |
+      | querysql    | SELECT * FROM {user} WHERE firstname = :firstname AND lastname = :lastname |
     When I log in as "admin"
     And I view the "Find user" custom sql report with these URL parameters:
       | firstname | Admin |
@@ -241,11 +199,3 @@ Feature: Ad-hoc database queries report
     And I press "Save changes"
     Then I should see "Test query"
     And I should see "This query reached the limit of 1 rows. Some rows may have been omitted from the end."
-
-  Scenario: View an Ad-hoc database query that returns data that confuses PHP CSV parsing
-    Given the following custom sql report exists:
-      | name     | Test query                                    |
-      | querysql | SELECT CHR(92) AS Backslash, CHR(44) AS Comma |
-    When I log in as "admin"
-    And I view the "Test query" custom sql report
-    Then "\" row "Comma" column of "report_customsql_results" table should contain ","

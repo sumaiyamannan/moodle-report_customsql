@@ -22,6 +22,9 @@
  * @license http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+defined('MOODLE_INTERNAL') || die();
+
+
 /**
  * Install code for report_customsql.
  *
@@ -33,7 +36,7 @@ function xmldb_report_customsql_install() {
     // Create the default 'Miscellaneous' category.
     $category = new stdClass();
     $category->name = get_string('defaultcategory', 'report_customsql');
-    if (!$DB->record_exists('report_customsql_categories', ['name' => $category->name])) {
+    if (!$DB->record_exists('report_customsql_categories', array('name' => $category->name))) {
         $DB->insert_record('report_customsql_categories', $category);
     }
 

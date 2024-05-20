@@ -24,9 +24,9 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$messageproviders = [
+$messageproviders = array(
     // Messages informing users that a certain report has run, for reports set to do that.
-    'notification' => [
+    'notification' => array(
         'capability' => 'report/customsql:view',
-    ],
-];
+    ),
+);

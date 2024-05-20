@@ -25,14 +25,14 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$tasks = [
-    [
+$tasks = array(
+    array(
         'classname' => 'report_customsql\task\run_reports',
         'blocking' => 0,
         'minute' => '10',
         'hour' => '*',
         'day' => '*',
         'month' => '*',
-        'dayofweek' => '*',
-    ],
-];
+        'dayofweek' => '*'
+    )
+);
